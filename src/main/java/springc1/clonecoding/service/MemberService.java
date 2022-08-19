@@ -36,6 +36,7 @@ public class MemberService {
     }
 
 
+    @Transactional
     public ResponseDto<?> userCheck(UserCheckRequestDto requestDto) {
        if(memberRepository.findByUsername(requestDto.getUsername()).isPresent()){
            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
@@ -46,6 +47,7 @@ public class MemberService {
 
 
 
+    @Transactional
     public ResponseDto<?> nickCheck(NickCheckRequestDto requestDto) {
         if(memberRepository.findByNickname(requestDto.getNickname()).isPresent()){
             throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");

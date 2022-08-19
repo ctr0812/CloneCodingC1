@@ -9,6 +9,7 @@ import springc1.clonecoding.domain.Member;
 import springc1.clonecoding.domain.Product;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -23,17 +24,16 @@ public class ProductResponseDto {
     private Long price;
     private String content;
     private String location;
-    private List<ImgProduct> imgProductList;
+    private List<ImgResponseDto> imgProductList = new ArrayList<>();
     private LocalDateTime createdAt;
 
-    public ProductResponseDto(Member member, Product product) {
+    public ProductResponseDto(Product product) {
         this.id = product.getId();
-        this.nickname = member.getNickname();
+        this.nickname = product.getMember().getNickname();
         this.name = product.getName();
         this.price = product.getPrice();
         this.content = product.getContent();
         this.location = product.getLocation();
-        this.imgProductList = product.getImgProductList();
         this.createdAt = product.getCreatedAt();
     }
 }

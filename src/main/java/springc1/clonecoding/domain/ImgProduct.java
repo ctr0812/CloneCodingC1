@@ -22,8 +22,4 @@ public class ImgProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
-    public ImgProduct(Product product){
-        this.product = product;
-
-    }
 }

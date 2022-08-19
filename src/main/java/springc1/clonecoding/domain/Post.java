@@ -1,6 +1,7 @@
 package springc1.clonecoding.domain;
 
 import lombok.*;
+import springc1.clonecoding.controller.request.PostRequestDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,4 +40,20 @@ public class Post extends Timestamped {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ImgPost> imgPostList ;
+
+    public Post(PostRequestDto requestDto, Member member) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.location = member.getLocation();
+        this.member = member;
+    }
+
+    public void update(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+    }
+
+    public boolean validateMember(Member member) {
+        return !this.member.equals(member);
+    }
 }

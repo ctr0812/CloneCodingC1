@@ -51,7 +51,6 @@ public class Product extends Timestamped{
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.content = requestDto.getContent();
-        this.imgProductList = requestDto.getImgProductList();
     }
 
     public boolean validateMember(Member member) {
