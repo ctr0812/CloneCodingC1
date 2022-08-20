@@ -7,6 +7,7 @@ on:
 
 env:
   S3_BUCKET_NAME: timbucket0812
+  RESOURCE_PATH: ./src/main/resources/application.yaml
   CODE_DEPLOY_APPLICATION_NAME: tim-code-deploy
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: tim-server
 
@@ -36,7 +37,7 @@ jobs:
 
         # [2]
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
 
         # [3]
       - name: Make zip file
