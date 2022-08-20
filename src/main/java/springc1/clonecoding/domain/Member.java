@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import springc1.clonecoding.controller.request.SignupRequestDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Builder
@@ -37,6 +39,8 @@ public class Member extends Timestamped {
     @Column(nullable = false)
     private String location;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Product> productList = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

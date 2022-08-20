@@ -3,6 +3,7 @@ package springc1.clonecoding.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springc1.clonecoding.controller.request.PageRequestDto;
 import springc1.clonecoding.controller.request.ProductRequestDto;
 import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.UserDetailsImpl;
@@ -52,4 +53,21 @@ public class ProductController {
     public ResponseDto<?> getProduct(@PathVariable Long id){
         return productService.getProduct(id);
     }
+
+
+    //api 전체 지역 상품 전체 조회
+    @GetMapping(value = "/api/product/page")
+    public ResponseDto<?> getAllProductPagesBy(@RequestBody PageRequestDto requestDto){
+        return productService.getAllProductPagesBy(requestDto);
+    }
+
+    //api 특정 지역 상품 전체 조회
+    @GetMapping(value = "/api/product/page/{location}")
+    public ResponseDto<?> getAllProductLocationPagesBy(@RequestBody PageRequestDto requestDto, @PathVariable String location){
+        return productService.getAllProductLocationPagesBy(requestDto, location);
+    }
+
 }
+
+
+

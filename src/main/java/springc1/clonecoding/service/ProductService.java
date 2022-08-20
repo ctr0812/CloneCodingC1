@@ -1,21 +1,24 @@
 package springc1.clonecoding.service;
 
+import aj.org.objectweb.asm.ConstantDynamic;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import springc1.clonecoding.controller.request.PageRequestDto;
 import springc1.clonecoding.controller.request.ProductRequestDto;
-import springc1.clonecoding.controller.response.ImgResponseDto;
-import springc1.clonecoding.controller.response.ProductAllResponseDto;
-import springc1.clonecoding.controller.response.ProductResponseDto;
-import springc1.clonecoding.controller.response.ResponseDto;
+import springc1.clonecoding.controller.response.*;
 import springc1.clonecoding.domain.*;
 import springc1.clonecoding.repository.ImgProductRepository;
 import springc1.clonecoding.repository.ProductRepository;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -68,7 +71,7 @@ public class ProductService {
     @Transactional
     public ResponseDto<?> getLocationProduct(String location) {
         // db에서 location 값으로 상품 전체 가져오기
-        List<Product> productList = productRepository.findAllByLocation(location);
+        List<Product> productList = productRepository.findAllByLocationOrderByIdDesc(location);
         // 전체 상품 dto 반환
         return ResponseDto.success(getAllProductResponseDto(productList));
     }
@@ -78,7 +81,7 @@ public class ProductService {
     @Transactional
     public ResponseDto<?> getAllProduct() {
         // db에서 상품 전체 가져오기
-        List<Product> productList = productRepository.findAll();
+        List<Product> productList = productRepository.findAllByOrderByCreatedAtDesc();
         // 전체 상품 dto 반환
         return ResponseDto.success(getAllProductResponseDto(productList));
     }
@@ -150,12 +153,52 @@ public class ProductService {
     }
 
     // 이미지 저장
+    @Transactional
     public void imgSave(ProductRequestDto requestDto, Product product) {
         List<ImgProduct> imgProductList = requestDto.getImgProductList();
         for (ImgProduct imgProduct : imgProductList) {
             imgProduct.setProduct(product);
             imgProductRepository.save(imgProduct);
         }
+    }
+
+    @Transactional
+    public ResponseDto<?> getAllProductPagesBy(PageRequestDto reqeustDto) {
+
+        PageRequest pageRequest = PageRequest.of(0, reqeustDto.getSize(), Sort.by("id").descending());
+        Page<Product> products = productRepository.findByIdLessThan(reqeustDto.getLastArticleId(), pageRequest);
+        List<PageResponseDto> pageResponseDtoList = toDtoList(products);
+
+        return ResponseDto.success(pageResponseDtoList);
+    }
+
+
+    @Transactional
+    public ResponseDto<?> getAllProductLocationPagesBy(PageRequestDto requestDto, String location) {
+        PageRequest pageRequest = PageRequest.of(0, requestDto.getSize(),Sort.by("id").descending());
+        Page<Product> products = productRepository.findByIdLessThanAndLocation(requestDto.getLastArticleId(), location, pageRequest);
+        List<PageResponseDto> pageResponseDtoList = toDtoList(products);
+
+        return ResponseDto.success(pageResponseDtoList);
+    }
+
+
+    // Page를 List로 변환
+    @Transactional
+    public List<PageResponseDto> toDtoList(Page<Product> products) {
+
+        List<Product> productList = products.getContent();
+        List<PageResponseDto> pageResponseDtoList = new ArrayList<>();
+        for (Product product : productList) {
+            PageResponseDto pageResponseDto = new PageResponseDto(product);
+            List<ImgProduct> imgProductList = imgProductRepository.findAllByProduct(product);
+            for (ImgProduct imgProduct : imgProductList) {
+                pageResponseDto.getImgProductList().add(new ImgResponseDto(imgProduct.getImgUrl()));
+            }
+            pageResponseDtoList.add(pageResponseDto);
+        }
+        return pageResponseDtoList;
+
     }
 
 }

@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  servlet: # max file size
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher # Spring boot 2.6 이후부터  spring.mvc.pathmatch.matching-strategy 값이 ant_path_matcher에서 path_pattern_parser로 변경
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://cloneproject.coi5bl8jchez.ap-northeast-2.rds.amazonaws.com:3306/cloneproject?serverTimezone=Asia/Seoul
+    username: ${ secrets.AWS_RDS_USERNAME }
+    password: ${ secrets.AWS_RDS_PASSWORD }
+
+
+  jpa:
+    hibernate:
+      ddl-auto: create #create update none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      use-new-id-generator-mappings: false
+    show-sql: true
+    generate-ddl: true # ddl-auto 속성을 사용할지 말지
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+
+  output: # output 색깔이 이뻐짐
+    ansi:
+      enabled: always
+
+
+
+logging:
+  level:
+    '[org.apache.coyote.http11]': DEBUG
+    '[org.springframework.web]': DEBUG
+    '[org.hibernate]': DEBUG
+
+jwt:
+  secret: ${ JWT_SECRET_KEY }
