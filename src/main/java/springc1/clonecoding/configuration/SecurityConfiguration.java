@@ -36,7 +36,7 @@ import java.util.TimeZone;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfiguration {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET_KEY}")
     String SECRET_KEY;
     private final TokenProvider tokenProvider;
     private final UserDetailsServiceImpl userDetailsServiceImpl;
