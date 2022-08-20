@@ -29,7 +29,6 @@ jobs:
         with:
           files: ./src/main/resources/application.yaml
         env:
-          override.value: 'from deploy.yaml'
           spring.datasource.username: ${{ secrets.AWS_RDS_USERNAME }}
           spring.datasource.password: ${{ secrets.AWS_RDS_PASSWORD }}
 
