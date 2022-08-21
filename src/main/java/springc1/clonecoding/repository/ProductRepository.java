@@ -9,11 +9,13 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,Long> {
 
-    Page<Product> findByIdLessThan(Long lastArticleId, PageRequest pageRequest);
-    Page<Product> findByIdLessThanAndLocation(Long lastArticleId ,String location, PageRequest pageRequest);
 
+    Page<Product> findByIdLessThan(Long lastArticleId, PageRequest pageRequest);
+    Page<Product> findByIdLessThanAndLocation(Long lastArticleIdId ,String location, PageRequest pageRequest);
+    Page<Product> findByLocation( String location, PageRequest pageRequest);
 
     List<Product> findAllByOrderByCreatedAtDesc();
     List<Product> findAllByLocationOrderByIdDesc(String location);
+
 
 }

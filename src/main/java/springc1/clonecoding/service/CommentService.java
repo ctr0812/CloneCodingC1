@@ -25,10 +25,11 @@ public class CommentService {
     public ResponseDto<?> createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
-        // id 로 댓글 존재 유무 확인
-        Post post = postService.isPresentPost(requestDto.getPostId());
-        // db 에 댓글 저장
-        commentRepository.save(new Comment(member, post, requestDto));
+
+        Post post = postService.getPostById(requestDto.getPostId());
+
+        Comment comment = Comment.of(member, post, requestDto.getContent());
+        commentRepository.save(comment);
         return ResponseDto.success("success");
     }
 
@@ -37,14 +38,12 @@ public class CommentService {
     public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
-        // id 로 댓글 존재 유무 확인
-        postService.isPresentPost(requestDto.getPostId());
-        // id 로 댓글 존재 유무 확인
-        Comment comment = isPresentComment(id);
-        // 댓글 작성자만이 수정 가능
+
+        Comment comment = getCommentById(id);
+
         memberValidateComment(member, comment);
-        // 댓글 업데이트
-        comment.update(requestDto);
+
+        comment.update(requestDto.getContent());
         return ResponseDto.success("success");
     }
 
@@ -54,7 +53,7 @@ public class CommentService {
 
         Member member = userDetails.getMember();
         // id 로 댓글 존재 유무 확인
-        Comment comment = isPresentComment(id);
+        Comment comment = getCommentById(id);
         // 댓글 작성자만이 수정 삭제 가능
         memberValidateComment(member, comment);
         // 댓글 삭제
@@ -63,27 +62,15 @@ public class CommentService {
 
     }
 
-
-    // id 로 댓글 존재 유무 확인
-    @Transactional(readOnly = true)
-    public Comment isPresentComment(Long id) {
-
-        Optional<Comment> optionalComment = commentRepository.findById(id);
-        Comment comment = optionalComment.orElse(null);
-
-        if (null == comment) {
-            throw new IllegalArgumentException("존재하지 않는 댓글 id 입니다");
-        } else{
-            return comment;
+    private void memberValidateComment(Member member, Comment comment) {
+        if (!comment.getMember().equals(member)) {
+            throw new IllegalArgumentException("댓글 작성자가 아닙니다");
         }
     }
 
-    // 댓글 작성자만이 수정 ,삭제 가능
     @Transactional(readOnly = true)
-    public void memberValidateComment(Member member, Comment comment) {
-        if (comment.validateMember(member)) {
-            throw new IllegalArgumentException("댓글 작성자가 아닙니다");
-        }
+    public Comment getCommentById(Long id) {
+        return commentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글 id 입니다"));
     }
 
 

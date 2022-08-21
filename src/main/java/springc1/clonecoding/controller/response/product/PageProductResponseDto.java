@@ -1,6 +1,7 @@
-package springc1.clonecoding.controller.response;
+package springc1.clonecoding.controller.response.product;
 
 import lombok.*;
+import springc1.clonecoding.controller.response.ImgResponseDto;
 import springc1.clonecoding.domain.Product;
 
 import java.util.ArrayList;
@@ -11,14 +12,14 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PageResponseDto  {
+public class PageProductResponseDto {
     private Long id;
     private String name;
     private Long price;
     private String location;
     private List<ImgResponseDto> imgProductList = new ArrayList<>();
 
-    public PageResponseDto(Product product) {
+    public PageProductResponseDto(Product product) {
         this.id = product.getId();
         this.name = product.getName();
         this.price = product.getPrice();

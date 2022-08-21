@@ -1,11 +1,9 @@
 package springc1.clonecoding.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import springc1.clonecoding.controller.request.ProductRequestDto;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder

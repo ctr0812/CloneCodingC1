@@ -30,18 +30,16 @@ public class Comment extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
-    public Comment(Member member, Post post, CommentRequestDto requestDto) {
-        this.member = member;
-        this.post = post;
-        this.content = requestDto.getContent();
+
+    public void update(String content) {
+        this.content = content;
     }
 
-    public void update(CommentRequestDto commentRequestDto) {
-        this.content = commentRequestDto.getContent();
+    public static Comment of(Member member, Post post, String content) {
+        return Comment.builder()
+                .post(post)
+                .member(member)
+                .content(content)
+                .build();
     }
-
-    public boolean validateMember(Member member) {
-        return !this.member.equals(member);
-    }
-
 }

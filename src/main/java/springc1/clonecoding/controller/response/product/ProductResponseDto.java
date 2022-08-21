@@ -1,9 +1,10 @@
-package springc1.clonecoding.controller.response;
+package springc1.clonecoding.controller.response.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import springc1.clonecoding.controller.response.ImgResponseDto;
 import springc1.clonecoding.domain.ImgProduct;
 import springc1.clonecoding.domain.Member;
 import springc1.clonecoding.domain.Product;
@@ -16,15 +17,11 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductResponseDto {
+public class ProductResponseDto extends ProductDto {
 
-    private Long id;
+
     private String nickname;
-    private String name;
-    private Long price;
     private String content;
-    private String location;
-    private List<ImgResponseDto> imgProductList = new ArrayList<>();
     private LocalDateTime createdAt;
 
     public ProductResponseDto(Product product) {

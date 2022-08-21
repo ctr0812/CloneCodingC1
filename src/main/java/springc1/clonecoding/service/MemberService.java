@@ -38,30 +38,26 @@ public class MemberService {
 
     @Transactional
     public ResponseDto<?> userCheck(UserCheckRequestDto requestDto) {
-       if(memberRepository.findByUsername(requestDto.getUsername()).isPresent()){
-           throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
-       } else{
-           return ResponseDto.success("success");
-       }
+        memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("중복된 아이디가 존재합니다."));
+        return ResponseDto.success("success");
     }
-
 
 
     @Transactional
     public ResponseDto<?> nickCheck(NickCheckRequestDto requestDto) {
-        if(memberRepository.findByNickname(requestDto.getNickname()).isPresent()){
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
-        } else{
-            return ResponseDto.success("success");
-        }
+        memberRepository.findByUsername(requestDto.getNickname()).orElseThrow(() -> new IllegalArgumentException("중복된 아이디가 존재합니다."));
+        return ResponseDto.success("success");
+
     }
 
 
     @Transactional
     public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-        // 아이디 존재 확인 , 비밀번호 확인 , 로그인 검증
-        Member member = memberCheck(requestDto);
+        // 아이디 존재 확인
+        Member member = memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        // 비밀번호 확인
+        passwordCheck(member.getPassword(), requestDto.getPassword());
         // 토큰 생성
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         // response header에 토큰 저장
@@ -70,22 +66,11 @@ public class MemberService {
         return ResponseDto.success("success");
 
     }
-
-
-
-    // 아이디 존재 확인 , 비밀번호 확인 , 로그인 검증
-    private Member memberCheck(LoginRequestDto requestDto) {
-        Optional<Member> optionalMember = memberRepository.findByUsername(requestDto.getUsername());
-         Member member = optionalMember.orElse(null);
-
-         if (member == null){
-             throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
-         } else if (!member.validatePassword(passwordEncoder, requestDto.getPassword())){
-            throw new IllegalArgumentException("사용자를 찾을 수 없습니다.");
-         } else return member;
-
+    private void passwordCheck(String password, String comfirmPassword) {
+        if (passwordEncoder.matches(password, comfirmPassword)){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
     }
-
 
     // response header에 토큰 저장
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {

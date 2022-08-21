@@ -1,28 +1,22 @@
-package springc1.clonecoding.controller.response;
+package springc1.clonecoding.controller.response.post;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import springc1.clonecoding.controller.response.CommentResponseDto;
 import springc1.clonecoding.domain.Post;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostResponseDto {
+public class PostResponseDto extends PostDto{
 
-    private Long id;
-    private String title;
     private String content;
-    private String location;
-    private String nickname;
-    private List<ImgResponseDto> imgPostList = new ArrayList<>();
     private LocalDateTime createdAt;
     private List<CommentResponseDto> comments;
 

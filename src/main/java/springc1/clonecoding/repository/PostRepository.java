@@ -8,5 +8,6 @@ import java.util.List;
 
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    List<Post> findAllByLocation(String location);
+    List<Post> findAllByLocationOrderByIdDesc(String location);
+    List<Post> findAllByOrderByCreatedAtDesc();
 }

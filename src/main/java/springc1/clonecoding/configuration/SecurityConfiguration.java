@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import springc1.clonecoding.jwt.AccessDeniedHandlerException;
 import springc1.clonecoding.jwt.AuthenticationEntryPointException;
 import springc1.clonecoding.jwt.JwtFilter;
@@ -26,6 +27,7 @@ import springc1.clonecoding.jwt.TokenProvider;
 import springc1.clonecoding.service.UserDetailsServiceImpl;
 
 import javax.annotation.PostConstruct;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.TimeZone;
 
@@ -106,7 +108,7 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated()
 
                 .and()
-                // 커스텀한 jwt filter 사용
+                  // 커스텀한 jwt filter 사용
                 .addFilterBefore(new JwtFilter(SECRET_KEY, tokenProvider, userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

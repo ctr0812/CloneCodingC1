@@ -63,7 +63,7 @@ public class ProductController {
 
     //api 특정 지역 상품 전체 조회
     @GetMapping(value = "/api/product/page/{location}")
-    public ResponseDto<?> getAllProductLocationPagesBy(@RequestBody PageRequestDto requestDto, @PathVariable String location){
+    public ResponseDto<?> getAllProductLocationPagesBy(@RequestBody PageRequestDto requestDto, @PathVariable("location") String location){
         return productService.getAllProductLocationPagesBy(requestDto, location);
     }
 

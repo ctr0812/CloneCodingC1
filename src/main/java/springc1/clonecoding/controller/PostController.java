@@ -8,6 +8,7 @@ import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.UserDetailsImpl;
 import springc1.clonecoding.service.PostService;
 
+
 @RequiredArgsConstructor
 @RestController
 public class PostController {
