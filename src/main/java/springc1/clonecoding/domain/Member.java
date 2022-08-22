@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import springc1.clonecoding.controller.request.SignupRequestDto;
+import springc1.clonecoding.websocket.domain.ChatRoomMember;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ public class Member extends Timestamped {
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Product> productList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

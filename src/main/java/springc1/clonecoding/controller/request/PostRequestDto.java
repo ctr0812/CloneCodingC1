@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import springc1.clonecoding.domain.ImgPost;
 import springc1.clonecoding.domain.ImgProduct;
+import springc1.clonecoding.domain.Post;
 
 import java.util.List;
 

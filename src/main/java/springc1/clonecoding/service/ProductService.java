@@ -52,6 +52,7 @@ public class ProductService {
 
         product.update(requestDto);
 
+        imgProductRepository.deleteAll(imgProductRepository.findAllByProduct(product));
         imgSave(requestDto, product);
         return ResponseDto.success("success");
     }

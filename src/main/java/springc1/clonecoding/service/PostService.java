@@ -52,6 +52,7 @@ public class PostService {
 
         post.update(requestDto);
 
+        imgPostRepository.deleteAll(imgPostRepository.findAllByPost(post));
         imgSave(requestDto, post);
         return ResponseDto.success("success");
     }

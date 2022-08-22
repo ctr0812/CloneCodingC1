@@ -5,12 +5,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.security.ConditionalOnDefaultWebSecurity;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +24,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springc1.clonecoding.jwt.AccessDeniedHandlerException;
 import springc1.clonecoding.jwt.AuthenticationEntryPointException;
 import springc1.clonecoding.jwt.JwtFilter;
@@ -66,10 +73,21 @@ public class SecurityConfiguration {
         configuration.setAllowedMethods(Arrays.asList("POST","GET","DELETE","PUT"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("AccessToken");
+        configuration.addExposedHeader("Access-Token");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> {
+            web.ignoring().requestMatchers(
+                    // js, css, image 등의 파일
+                    PathRequest.toStaticResources().atCommonLocations()
+            );
+        };
     }
 
     @Bean
@@ -79,6 +97,10 @@ public class SecurityConfiguration {
 
         http.csrf().disable()
 
+                .headers()
+                .frameOptions().sameOrigin() // SocckJs HTML ifram 요소 전송 허용
+
+                .and()
                   // 시큐리티 예외 처리
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPointException)
@@ -105,6 +127,10 @@ public class SecurityConfiguration {
                   // 전체상품 조회 , 상품 상세 조회 filter 통과
                 .antMatchers(HttpMethod.GET,"/api/product").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/product/id/**").permitAll()
+                // socket 관련 허용
+                .antMatchers("/chat/**").permitAll()
+                .antMatchers("/ws-stomp/**").permitAll()
+                .mvcMatchers("/webjars/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
