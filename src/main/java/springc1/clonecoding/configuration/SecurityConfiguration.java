@@ -128,9 +128,7 @@ public class SecurityConfiguration {
                 .antMatchers(HttpMethod.GET,"/api/product").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/product/id/**").permitAll()
                 // socket 관련 허용
-                .antMatchers("/chat/**").permitAll()
                 .antMatchers("/ws/**").permitAll()
-                .mvcMatchers("/webjars/**").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
