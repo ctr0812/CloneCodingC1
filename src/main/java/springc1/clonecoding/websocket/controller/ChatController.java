@@ -20,6 +20,6 @@ import springc1.clonecoding.websocket.domain.ChatMessageDto;
             if (ChatMessage.MessageType.ENTER.equals(message.getType()))
                 message.setMessage(message.getSender() + "님이 입장하셨습니다.");
 //            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
-            messagingTemplate.convertAndSend("/sub/chat/room/" + 1, message);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
         }
     }
