@@ -5,14 +5,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springc1.clonecoding.controller.request.*;
-import springc1.clonecoding.controller.response.MemberResponseDto;
 import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.Member;
 import springc1.clonecoding.jwt.TokenProvider;
 import springc1.clonecoding.repository.MemberRepository;
-
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
+
 
 @RequiredArgsConstructor
 @Service
@@ -25,11 +23,13 @@ public class MemberService {
     @Transactional
     public ResponseDto<?> createMember(SignupRequestDto requestDto) {
 
-        //패스워드 인코딩
+        isPresentUserName(requestDto.getUsername());
+        isPresentNickName(requestDto.getUsername());
+
         String password = passwordEncoder.encode(requestDto.getPassword());
-        // 멤버 생성
+
         Member member = new Member(requestDto, password);
-        //db에 멤버 저장
+
         memberRepository.save(member);
         return ResponseDto.success("success");
 
@@ -38,29 +38,26 @@ public class MemberService {
 
     @Transactional
     public ResponseDto<?> userCheck(UserCheckRequestDto requestDto) {
-        memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("중복된 아이디가 존재합니다."));
+        isPresentUserName(requestDto.getUsername());
         return ResponseDto.success("success");
     }
 
 
     @Transactional
     public ResponseDto<?> nickCheck(NickCheckRequestDto requestDto) {
-        memberRepository.findByUsername(requestDto.getNickname()).orElseThrow(() -> new IllegalArgumentException("중복된 아이디가 존재합니다."));
+        isPresentNickName(requestDto.getNickname());
         return ResponseDto.success("success");
-
     }
-
 
     @Transactional
     public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-        // 아이디 존재 확인
         Member member = memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        // 비밀번호 확인
+
         passwordCheck(member.getPassword(), requestDto.getPassword());
-        // 토큰 생성
+
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-        // response header에 토큰 저장
+
         tokenToHeaders(tokenDto, response);
 
         return ResponseDto.success("success");
@@ -72,10 +69,22 @@ public class MemberService {
         }
     }
 
-    // response header에 토큰 저장
+
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
         response.addHeader("Access_Token", "Bearer " + tokenDto.getAccessToken());
     }
 
+    @Transactional(readOnly = true)
+    public void isPresentUserName(String username) {
+        if(memberRepository.findByUsername(username).isPresent()){
+            throw new IllegalArgumentException("중복된 아이디가 존재합니다");
+        }
+    }
+    @Transactional(readOnly = true)
+    public void isPresentNickName(String nickname) {
+        if(memberRepository.findByNickname(nickname).isPresent()){
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다");
+        }
+    }
 
 }
