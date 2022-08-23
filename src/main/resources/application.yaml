@@ -3,8 +3,6 @@ server:
 
 
 spring:
-  config:
-    import: secrets.yaml
   servlet: # max file size
     multipart:
       max-file-size: 50MB
@@ -17,8 +15,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://cloneproject.coi5bl8jchez.ap-northeast-2.rds.amazonaws.com:3306/cloneproject?serverTimezone=Asia/Seoul
-    username: ${AWS_RDS_USERNAME}
-    password: ${AWS_RDS_PASSWORD}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
   devtools:
     livereload:
       enabled: true
@@ -51,4 +49,4 @@ spring:
       enabled: always
 
 jwt:
-  secret: ${JWT_SECRET_KEY}
+  secret: ${jwt.secret}

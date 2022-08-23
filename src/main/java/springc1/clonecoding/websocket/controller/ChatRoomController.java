@@ -31,7 +31,6 @@ public class ChatRoomController {
         return chatRoomService.createChatRoom();
     }
 
-
     // 특정 채팅방 조회
     @GetMapping("/room/{roomId}")
     public ChatRoom roomInfo(@PathVariable String roomId) {
