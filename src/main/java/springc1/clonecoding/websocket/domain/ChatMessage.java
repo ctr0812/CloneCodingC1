@@ -20,7 +20,7 @@ public class ChatMessage extends Timestamped {
     private Long id;
 
     @Column
-    private String nickname; // 메시지 보낸사람
+    private String nickname; // 메시지 보낸 사람
 
     @Column
     private String roomId; // 방번호
