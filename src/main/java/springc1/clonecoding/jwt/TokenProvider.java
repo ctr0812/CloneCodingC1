@@ -23,7 +23,7 @@ public class TokenProvider {
 //  private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 5;            // 5초
 
 
-  public TokenProvider(@Value("${JWT_SECRET_KEY}") String secretKey) {
+  public TokenProvider(@Value("${jwt.secret}") String secretKey) {
 
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     this.key = Keys.hmacShaKeyFor(keyBytes);
