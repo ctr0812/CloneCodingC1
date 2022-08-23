@@ -15,4 +15,5 @@ public class ChatRoomCheckDto {
     private Long productId;
     private Long lastArticleId;
     private int size;
+
 }
