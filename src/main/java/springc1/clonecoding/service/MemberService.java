@@ -74,7 +74,7 @@ public class MemberService {
 
     // response header에 토큰 저장
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-        response.addHeader("Access-Token", "Bearer " + tokenDto.getAccessToken());
+        response.addHeader("Access_Token", "Bearer " + tokenDto.getAccessToken());
     }
 
 

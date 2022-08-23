@@ -73,7 +73,7 @@ public class SecurityConfiguration {
         configuration.setAllowedMethods(Arrays.asList("POST","GET","DELETE","PUT"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Access-Token");
+        configuration.addExposedHeader("Access_Token");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
