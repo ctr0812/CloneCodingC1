@@ -34,9 +34,8 @@ public class ChatRoom implements Serializable {
     @OneToMany(mappedBy = "chatRoom")
     private List<ChatRoomMember> chatRoomMembers = new ArrayList<>();
 
-    public static ChatRoom create() {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
-        return chatRoom;
+    public ChatRoom (Product product) {
+        this.product = product;
+        this.roomId = UUID.randomUUID().toString();
     }
 }

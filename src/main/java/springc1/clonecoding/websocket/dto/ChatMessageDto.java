@@ -1,4 +1,4 @@
-package springc1.clonecoding.websocket.domain;
+package springc1.clonecoding.websocket.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ChatMessageDto {
 
-    private String sender; // 메시지 보낸사람
+    private String nickname; // 메시지 보낸사람
 
     private String roomId; // 방번호
 
