@@ -19,6 +19,7 @@ import springc1.clonecoding.websocket.domain.ChatMessageDto;
             System.out.println("pub/chat/실행되었습니다");
             if (ChatMessage.MessageType.ENTER.equals(message.getType()))
                 message.setMessage(message.getSender() + "님이 입장하셨습니다.");
-            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+//            messagingTemplate.convertAndSend("/sub/chat/room/" + message.getRoomId(), message);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + 1, message);
         }
     }
