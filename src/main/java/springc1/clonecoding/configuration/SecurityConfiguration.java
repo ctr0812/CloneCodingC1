@@ -79,17 +79,6 @@ public class SecurityConfiguration {
         return source;
     }
 
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> {
-            web.ignoring().requestMatchers(
-                    // js, css, image 등의 파일
-                    PathRequest.toStaticResources().atCommonLocations()
-            );
-        };
-    }
-
     @Bean
     @Order(SecurityProperties.BASIC_AUTH_ORDER)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
