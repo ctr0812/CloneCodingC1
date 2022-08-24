@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     //api 상품 삭제
-    @DeleteMapping(value = "/api/product{id}")
+    @DeleteMapping(value = "/api/product/{id}")
     public ResponseDto<?> deleteProduct(@PathVariable Long id,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
         return productService.deleteProduct(id, userDetails);
