@@ -1,11 +1,7 @@
 package springc1.clonecoding.websocket.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.Member;
 import springc1.clonecoding.domain.Product;
@@ -14,14 +10,15 @@ import springc1.clonecoding.repository.ProductRepository;
 import springc1.clonecoding.websocket.domain.ChatMessage;
 import springc1.clonecoding.websocket.domain.ChatRoom;
 import springc1.clonecoding.websocket.domain.ChatRoomMember;
-import springc1.clonecoding.websocket.dto.ChatMessageResponseDto;
-import springc1.clonecoding.websocket.dto.ChatRoomCheckDto;
-import springc1.clonecoding.websocket.dto.ChatRoomResponseDto;
+import springc1.clonecoding.websocket.dto.response.ChatMessageResponseDto;
+import springc1.clonecoding.websocket.dto.request.ChatRoomDto;
+import springc1.clonecoding.websocket.dto.response.ChatRoomResponseDto;
 import springc1.clonecoding.websocket.repository.ChatMessageRepository;
 import springc1.clonecoding.websocket.repository.ChatRoomMemberRepository;
 import springc1.clonecoding.websocket.repository.ChatRoomRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -34,33 +31,30 @@ public class ChatRoomService {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
 
-    public ResponseDto<?> check(ChatRoomCheckDto dto) {
-        String senderNick = dto.getNickname();
-        Member sender = memberRepository.findByNickname(senderNick).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+    public ResponseDto<?> existRoomCheck(String nickname, Long productId) {
 
-        Long productId = dto.getProductId();
-        Product findProduct = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 id 입니다"));
-        Member receiver = findProduct.getMember();
+        ChatRoom chatRoom = findExistChatRoom(nickname,productId);
 
-        List<ChatRoom> chatRoomList = chatRoomRepository.findAllByProduct(findProduct);
-
-        if( existChatRoom(chatRoomList, sender, receiver) != null){
+        if( chatRoom != null){
             return ResponseDto.success("exist");
         } else{
-            return ResponseDto.success("create");
+            throw new IllegalArgumentException("방이 존재하지 않습니다");
         }
     }
 
 
-    public ResponseDto<?> getChatMessage(ChatRoomCheckDto dto) {
+    public ResponseDto<?> getChatMessage(String nickname, Long productId) {
 
-        PageRequest pageRequest = PageRequest.of(0, dto.getSize(), Sort.by("id").descending());
-        return ResponseDto.success(getChatMessageResponseDtoList(pageRequest,dto));
+        ChatRoom chatRoom = findExistChatRoom(nickname, productId);
 
+        System.out.println(chatRoom.getRoomId());
+        String roomId = chatRoom.getRoomId();
+
+        return ResponseDto.success(getChatMessageResponseDtoList(roomId));
     }
 
 
-    public ResponseDto<ChatRoomResponseDto> createChatRoom(ChatRoomCheckDto dto) {
+    public ResponseDto<ChatRoomResponseDto> createChatRoom(ChatRoomDto dto) {
 
         String senderNick = dto.getNickname();
         Member sender = memberRepository.findByNickname(senderNick).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
@@ -69,47 +63,56 @@ public class ChatRoomService {
         Product findProduct = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 id 입니다"));
         Member receiver = findProduct.getMember();
 
-        ChatRoom chatRoom = new ChatRoom(findProduct);
-        chatRoomRepository.save(chatRoom);
+        if(findExistChatRoom(senderNick,productId)!=null) {
+            throw new IllegalArgumentException("방이 존재합니다");
+        };
 
-        ChatRoomMember chatRoomMember1 = new ChatRoomMember(sender , chatRoom);
-        ChatRoomMember chatRoomMember2 = new ChatRoomMember(receiver, chatRoom);
-        chatRoomMemberRepository.save(chatRoomMember1);
-        chatRoomMemberRepository.save(chatRoomMember2);
+        if (sender.equals(receiver)) {
+            throw new IllegalArgumentException("내 게시물입니다");
+        } else {
+            ChatRoom chatRoom = new ChatRoom(findProduct);
+            chatRoomRepository.save(chatRoom);
 
-        ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomId());
+            ChatRoomMember chatRoomMember1 = new ChatRoomMember(sender , chatRoom);
+            ChatRoomMember chatRoomMember2 = new ChatRoomMember(receiver, chatRoom);
+            chatRoomMemberRepository.save(chatRoomMember1);
+            chatRoomMemberRepository.save(chatRoomMember2);
 
-        return ResponseDto.success(chatRoomResponseDto);
+            ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomId());
+
+            return ResponseDto.success(chatRoomResponseDto);
+        }
+
+
     }
 
 
 
     // 전체 page Dto 반환
-    private List<ChatMessageResponseDto> getChatMessageResponseDtoList(PageRequest pageRequest, ChatRoomCheckDto dto) {
-        if (dto.getLastArticleId() == null) {
-            Page<ChatMessage> chatMessages = chatMessageRepository.findAll(pageRequest);
-            return toDtoList(chatMessages);
-        } else{
-            Page<ChatMessage> chatMessages =  chatMessageRepository.findByIdLessThan(dto.getLastArticleId(), pageRequest);
-            return toDtoList(chatMessages);
-        }
+    private List<ChatMessageResponseDto> getChatMessageResponseDtoList(String roomId){
+
+        List<ChatMessage> chatMessages = chatMessageRepository.findAllByRoomIdOrderByCreatedAtDesc(roomId);
+
+            return chatMessages.stream().map(ChatMessageResponseDto::new).collect(Collectors.toList());
     }
 
 
-    // Page를 List로 변환
-    @Transactional
-    public List<ChatMessageResponseDto> toDtoList(Page<ChatMessage> chatMessages) {
-        return chatMessages.map(ChatMessageResponseDto::new).toList();
-    }
 
-    public ChatRoom existChatRoom(List<ChatRoom> chatRoomList , Member sender, Member receiver) {
+    public ChatRoom findExistChatRoom(String nickname, Long productId) {
+
+        Member sender = memberRepository.findByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("채팅방 존재하지 않습니다"));
+
+        Product findProduct = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("채팅방 존재하지 않습니다"));
+        Member receiver = findProduct.getMember();
+
+        List<ChatRoom> chatRoomList = chatRoomRepository.findAllByProduct(findProduct);
         for (ChatRoom chatRoom : chatRoomList) {
-            if (chatRoom.getChatRoomMembers().contains(chatRoomMemberRepository.findByMember(sender)))
-                if (chatRoom.getChatRoomMembers().contains(chatRoomMemberRepository.findByMember(receiver))) {
-                    return chatRoom;
-                }
+            if (chatRoom.getChatRoomMembers().contains(chatRoomMemberRepository.findByMemberAndChatRoom(sender,chatRoom).orElse(new ChatRoomMember()))&&
+                    chatRoom.getChatRoomMembers().contains(chatRoomMemberRepository.findByMemberAndChatRoom(receiver,chatRoom).orElse(new ChatRoomMember()))){
+                return chatRoom;
+            }
         } return null;
-    }
 
+    }
 
 }

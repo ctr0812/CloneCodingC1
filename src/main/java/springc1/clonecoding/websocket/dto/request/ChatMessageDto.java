@@ -1,4 +1,4 @@
-package springc1.clonecoding.websocket.dto;
+package springc1.clonecoding.websocket.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

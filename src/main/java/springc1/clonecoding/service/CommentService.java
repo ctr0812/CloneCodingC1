@@ -52,11 +52,11 @@ public class CommentService {
     public ResponseDto<?> deleteComment(Long id, UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
-        // id 로 댓글 존재 유무 확인
+
         Comment comment = getCommentById(id);
-        // 댓글 작성자만이 수정 삭제 가능
+
         memberValidateComment(member, comment);
-        // 댓글 삭제
+
         commentRepository.delete(comment);
         return ResponseDto.success("success");
 

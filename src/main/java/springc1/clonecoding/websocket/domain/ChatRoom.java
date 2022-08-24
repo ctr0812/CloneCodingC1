@@ -25,9 +25,10 @@ public class ChatRoom implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String roomId;
 
-    @JoinColumn
+    @JoinColumn(name = "product_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 

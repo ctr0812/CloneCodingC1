@@ -2,7 +2,7 @@ package springc1.clonecoding.websocket.domain;
 
 import lombok.*;
 import springc1.clonecoding.domain.Timestamped;
-import springc1.clonecoding.websocket.dto.ChatMessageDto;
+import springc1.clonecoding.websocket.dto.request.ChatMessageDto;
 
 import javax.persistence.*;
 
@@ -28,9 +28,11 @@ public class ChatMessage extends Timestamped {
     @Column
     private String message; // 메시지
 
-    @JoinColumn
+
+    @JoinColumn(name = "chatRoom_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ChatRoom chatRoom;
+
 
     public ChatMessage(ChatMessageDto message) {
         this.nickname = message.getNickname();
