@@ -17,7 +17,9 @@ import springc1.clonecoding.websocket.repository.ChatMessageRepository;
 import springc1.clonecoding.websocket.repository.ChatRoomMemberRepository;
 import springc1.clonecoding.websocket.repository.ChatRoomRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -78,13 +80,27 @@ public class ChatRoomService {
             chatRoomMemberRepository.save(chatRoomMember1);
             chatRoomMemberRepository.save(chatRoomMember2);
 
-            ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomId());
+            ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomId(),chatRoom.getProduct().getName());
 
             return ResponseDto.success(chatRoomResponseDto);
         }
 
 
     }
+
+    public ResponseDto<?> getChatRoom(String nickname) {
+        Member findMember = memberRepository.findByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
+        List<ChatRoomMember> chatRoomMemberList = chatRoomMemberRepository.findAllByMember(findMember);
+
+        List<ChatRoomResponseDto> chatRoomResponseDtoList = new ArrayList<>();
+        chatRoomMemberList.forEach(chatRoomMember -> {
+            ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoomMember.getChatRoom());
+            chatRoomResponseDtoList.add(chatRoomResponseDto);
+        });
+        return ResponseDto.success(chatRoomResponseDtoList);
+    }
+
+
 
 
 
@@ -114,5 +130,4 @@ public class ChatRoomService {
         } return null;
 
     }
-
 }
