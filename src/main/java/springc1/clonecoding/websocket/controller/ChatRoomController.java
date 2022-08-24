@@ -14,27 +14,27 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
 
-    // 채팅방 유무 확인
+    //api 채팅방 유무 확인
     @GetMapping("/chat/check/{nickname}/{productId}")
     public ResponseDto<?> existRoomCheck(@PathVariable String nickname, @PathVariable Long productId) {
         return chatRoomService.existRoomCheck(nickname,productId);
     }
     
 
-    // 채팅 메시지 조회
+    //api 채팅 메시지 조회
     @GetMapping("/chat/chatMessage/{nickname}/{productId}")
     public ResponseDto<?> getChatMessage(@PathVariable String nickname, @PathVariable Long productId) {
         return chatRoomService.getChatMessage(nickname,productId);
     }
 
 
-    // 채팅방 생성
+    //api 채팅방 생성
     @PostMapping("/chat/chatRoom")
     public ResponseDto<?> createChatRoom(@RequestBody ChatRoomDto dto) {
         return chatRoomService.createChatRoom(dto);
     }
 
-    // 채팅방 목록 불러오기
+    //api 채팅방 목록 불러오기
     @GetMapping("/chat/chatRoom/{nickname}")
     public ResponseDto<?> getChatRoom(@PathVariable String nickname) {
         return chatRoomService.getChatRoom(nickname);
