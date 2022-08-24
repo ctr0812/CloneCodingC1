@@ -33,4 +33,10 @@ public class ChatRoomController {
     public ResponseDto<?> createChatRoom(@RequestBody ChatRoomDto dto) {
         return chatRoomService.createChatRoom(dto);
     }
+
+    // 채팅방 목록 불러오기
+    @GetMapping("/chat/chatRoom/{nickname}")
+    public ResponseDto<?> getChatRoom(@PathVariable String nickname) {
+        return chatRoomService.getChatRoom(nickname);
+    }
 }
