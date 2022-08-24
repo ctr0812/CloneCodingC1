@@ -26,21 +26,17 @@ public class AuthenticationEntryPointException implements
   public void commence(HttpServletRequest request, HttpServletResponse response,
                        AuthenticationException e) throws IOException {
 
-//
 
     response.setContentType("application/json;charset=UTF-8");
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
     JSONObject responseJson = new JSONObject();
-
-    responseJson.put("status", ErrorCode.INVALID_AUTH_TOKEN.getHttpStatus().value());
     responseJson.put("error", ErrorCode.INVALID_AUTH_TOKEN.getHttpStatus());
     responseJson.put("code", ErrorCode.INVALID_AUTH_TOKEN.toString());
     responseJson.put("message", ErrorCode.INVALID_AUTH_TOKEN.getErrorMessage());
-    responseJson.put("timestamp", LocalDateTime.now());
+
 
     response.getWriter().print(responseJson);
-
 
   }
 }

@@ -27,7 +27,7 @@ public class MemberService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public ResponseEntity<String> signup(SignupRequestDto requestDto) {
+    public ResponseDto<String> signup(SignupRequestDto requestDto) {
 
 
         String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
@@ -67,45 +67,44 @@ public class MemberService {
         Member member = new Member(requestDto, password);
 
         memberRepository.save(member);
-        return new ResponseEntity<>("회원가입 축하합니다!", HttpStatus.OK);
+        return ResponseDto.success("회원가입 축하합니다!");
 
     }
 
 
     @Transactional
-    public ResponseEntity<String> userCheck(UserCheckRequestDto requestDto) {
+    public ResponseDto<String> userCheck(UserCheckRequestDto requestDto) {
 
         String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
         String username = requestDto.getUsername();
 
         if (username.equals(""))
-            return new ResponseEntity("아이디를 입력해주세요.",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","아이디를 입력해주세요.");
         else if (memberRepository.findByUsername(username).isPresent())
-            return new ResponseEntity("중복된 아이디가 존재합니다",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","중복된 아이디가 존재합니다");
         else if (!Pattern.matches(userNamePattern, username))
-            return new ResponseEntity("아이디는 영문, 숫자 모두 가능합니다",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","아이디는 영문, 숫자 모두 가능합니다");
 
-        return new ResponseEntity<>("사용 가능한 아이디입니다", HttpStatus.OK);
+        return ResponseDto.success("사용 가능한 아이디입니다");
     }
 
 
     @Transactional
-    public ResponseEntity<String> nickCheck(NickCheckRequestDto requestDto) {
+    public ResponseDto<String> nickCheck(NickCheckRequestDto requestDto) {
 
         String nicknamePattern = "^[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣~!@#$%^&*]{2,8}";  // 영어 , 한글 , 특수문자 , 2자이상 8자이하
         String nickname = requestDto.getNickname();
 
         if (nickname.equals(""))
-            return new ResponseEntity("닉네임을 입력해주세요.",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","닉네임을 입력해주세요.");
         else if (memberRepository.findByNickname(nickname).isPresent())
-            return new ResponseEntity("중복된 닉네임이 존재합니다",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","중복된 닉네임이 존재합니다");
         else if (2 > nickname.length() || 8 < nickname.length())
-            return new ResponseEntity("닉네임은 2자 이상 8자 이하여야 합니다",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","닉네임은 2자 이상 8자 이하여야 합니다");
         else if (!Pattern.matches(nicknamePattern, nickname))
-            return new ResponseEntity("닉네임은 영문, 한글, 특수문자 다 가능합니다",HttpStatus.OK);
+            return ResponseDto.fail("Bad_Request","닉네임은 영문, 한글, 특수문자 다 가능합니다");
 
-
-        return new ResponseEntity<>("사용 가능한 닉네임입니다", HttpStatus.OK);
+        return ResponseDto.success("사용 가능한 닉네임입니다");
     }
 
 
