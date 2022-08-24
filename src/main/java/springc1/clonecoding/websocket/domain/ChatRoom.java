@@ -2,6 +2,7 @@ package springc1.clonecoding.websocket.domain;
 
 import lombok.*;
 import springc1.clonecoding.domain.Product;
+import springc1.clonecoding.websocket.dto.request.ChatMessageDto;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,5 +39,9 @@ public class ChatRoom implements Serializable {
     public ChatRoom (Product product) {
         this.product = product;
         this.roomId = UUID.randomUUID().toString();
+    }
+
+    public ChatRoom(ChatMessageDto message) {
+        this.roomId = message.getRoomId();
     }
 }
