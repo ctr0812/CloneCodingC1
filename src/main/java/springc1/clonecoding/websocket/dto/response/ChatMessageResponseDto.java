@@ -1,12 +1,10 @@
-package springc1.clonecoding.websocket.dto;
+package springc1.clonecoding.websocket.dto.response;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import springc1.clonecoding.websocket.domain.ChatMessage;
 
+@Builder
 @Getter
 @Setter
 @NoArgsConstructor

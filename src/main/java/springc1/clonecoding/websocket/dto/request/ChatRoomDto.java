@@ -1,4 +1,4 @@
-package springc1.clonecoding.websocket.dto;
+package springc1.clonecoding.websocket.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRoomCheckDto {
+public class ChatRoomDto {
 
     private String nickname;
     private Long productId;
-    private Long lastArticleId;
-    private int size;
 
 }
