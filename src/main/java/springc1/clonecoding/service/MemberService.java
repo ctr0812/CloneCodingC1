@@ -79,11 +79,11 @@ public class MemberService {
         String username = requestDto.getUsername();
 
         if (username.equals(""))
-            throw new CustomException(ErrorCode.EMPTY_USERNAME);
+            return new ResponseEntity("아이디를 입력해주세요.",HttpStatus.OK);
         else if (memberRepository.findByUsername(username).isPresent())
-            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+            return new ResponseEntity("중복된 아이디가 존재합니다",HttpStatus.OK);
         else if (!Pattern.matches(userNamePattern, username))
-            throw new CustomException(ErrorCode.USERNAME_WRONG);
+            return new ResponseEntity("아이디는 영문, 숫자 모두 가능합니다",HttpStatus.OK);
 
         return new ResponseEntity<>("사용 가능한 아이디입니다", HttpStatus.OK);
     }
@@ -96,13 +96,13 @@ public class MemberService {
         String nickname = requestDto.getNickname();
 
         if (nickname.equals(""))
-            throw new CustomException(ErrorCode.EMPTY_NICKNAME);
+            return new ResponseEntity("닉네임을 입력해주세요.",HttpStatus.OK);
         else if (memberRepository.findByNickname(nickname).isPresent())
-            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+            return new ResponseEntity("중복된 닉네임이 존재합니다",HttpStatus.OK);
         else if (2 > nickname.length() || 8 < nickname.length())
-            throw new CustomException(ErrorCode.NICKNAME_LEGNTH);
+            return new ResponseEntity("닉네임은 2자 이상 8자 이하여야 합니다",HttpStatus.OK);
         else if (!Pattern.matches(nicknamePattern, nickname))
-            throw new CustomException(ErrorCode.NICKNAME_WRONG);
+            return new ResponseEntity("닉네임은 영문, 한글, 특수문자 다 가능합니다",HttpStatus.OK);
 
 
         return new ResponseEntity<>("사용 가능한 닉네임입니다", HttpStatus.OK);
