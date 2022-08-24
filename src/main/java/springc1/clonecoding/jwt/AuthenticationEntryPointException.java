@@ -40,11 +40,12 @@ public class AuthenticationEntryPointException implements
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
     JSONObject responseJson = new JSONObject();
-    responseJson.put("timestamp", LocalDateTime.now());
     responseJson.put("status", errorCode.getHttpStatus().value());
     responseJson.put("error", errorCode.getHttpStatus());
     responseJson.put("code", errorCode.toString());
     responseJson.put("message", errorCode.getErrorMessage());
+    responseJson.put("timestamp", LocalDateTime.now());
+
 
     response.getWriter().print(responseJson);
   }

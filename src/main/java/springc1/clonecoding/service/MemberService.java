@@ -125,7 +125,7 @@ public class MemberService {
     // raw password , encoded password 위치 중요
     private void passwordCheck(String password, String comfirmPassword) {
         if (!passwordEncoder.matches(password, comfirmPassword)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
     }
 
