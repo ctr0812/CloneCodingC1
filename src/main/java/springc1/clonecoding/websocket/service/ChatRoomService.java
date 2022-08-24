@@ -2,6 +2,7 @@ package springc1.clonecoding.websocket.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.Member;
 import springc1.clonecoding.domain.Product;
@@ -19,7 +20,6 @@ import springc1.clonecoding.websocket.repository.ChatRoomRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -33,6 +33,8 @@ public class ChatRoomService {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatMessageRepository chatMessageRepository;
 
+
+
     public ResponseDto<?> existRoomCheck(String nickname, Long productId) {
 
         ChatRoom chatRoom = findExistChatRoom(nickname,productId);
@@ -40,7 +42,7 @@ public class ChatRoomService {
         if( chatRoom != null){
             return ResponseDto.success("exist");
         } else{
-            throw new IllegalArgumentException("방이 존재하지 않습니다");
+            return ResponseDto.fail("NO_ROOM_FOUND","방이 존재하지 않습니다");
         }
     }
 
@@ -54,6 +56,7 @@ public class ChatRoomService {
 
         return ResponseDto.success(getChatMessageResponseDtoList(roomId));
     }
+
 
 
     public ResponseDto<ChatRoomResponseDto> createChatRoom(ChatRoomDto dto) {
@@ -88,6 +91,7 @@ public class ChatRoomService {
 
     }
 
+
     public ResponseDto<?> getChatRoom(String nickname) {
         Member findMember = memberRepository.findByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다"));
         List<ChatRoomMember> chatRoomMemberList = chatRoomMemberRepository.findAllByMember(findMember);
@@ -104,7 +108,8 @@ public class ChatRoomService {
 
 
 
-    // 전체 page Dto 반환
+
+
     private List<ChatMessageResponseDto> getChatMessageResponseDtoList(String roomId){
 
         List<ChatMessage> chatMessages = chatMessageRepository.findAllByRoomIdOrderByCreatedAtDesc(roomId);
@@ -130,4 +135,5 @@ public class ChatRoomService {
         } return null;
 
     }
+
 }
