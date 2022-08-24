@@ -23,19 +23,19 @@ public class MemberController {
 
     //api 회원가입
     @PostMapping(value = "/user/signup")
-    public ResponseEntity<String> signup(@RequestBody SignupRequestDto requestDto) {
+    public ResponseDto<String> signup(@RequestBody SignupRequestDto requestDto) {
         return memberService.signup(requestDto);
     }
 
     //api 아이디 중복체크
     @PostMapping(value = "/user/signup/usercheck")
-    public ResponseEntity<String> usercheck(@RequestBody UserCheckRequestDto requestDto){
+    public ResponseDto<String> usercheck(@RequestBody UserCheckRequestDto requestDto){
         return memberService.userCheck(requestDto);
     }
 
     //api 닉네임 중복체크
     @PostMapping(value = "/user/signup/nickcheck")
-    public ResponseEntity<String> nickcheck(@RequestBody NickCheckRequestDto requestDto){
+    public ResponseDto<String>  nickcheck(@RequestBody NickCheckRequestDto requestDto){
         return memberService.nickCheck(requestDto);
     }
 

@@ -30,7 +30,8 @@ public enum ErrorCode {
 
     INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료되었거나 유효하지 않은 토큰입니다"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 틀렸습니다"),
-    
+
+
     /*
     404 Not Found
      */
