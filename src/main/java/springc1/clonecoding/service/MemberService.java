@@ -113,7 +113,7 @@ public class MemberService {
     public ResponseEntity<ResponseDto<MemberResponseDto>> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
         Member member = memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        passwordCheck(member.getPassword(), requestDto.getPassword());
+        passwordCheck(requestDto.getPassword(), member.getPassword());
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
@@ -122,9 +122,9 @@ public class MemberService {
 
     }
 
-
+    // raw password , encoded password 위치 중요
     private void passwordCheck(String password, String comfirmPassword) {
-        if (passwordEncoder.matches(password, comfirmPassword)) {
+        if (!passwordEncoder.matches(password, comfirmPassword)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
