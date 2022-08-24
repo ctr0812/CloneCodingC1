@@ -9,6 +9,7 @@ import springc1.clonecoding.controller.request.LoginRequestDto;
 import springc1.clonecoding.controller.request.NickCheckRequestDto;
 import springc1.clonecoding.controller.request.SignupRequestDto;
 import springc1.clonecoding.controller.request.UserCheckRequestDto;
+import springc1.clonecoding.controller.response.MemberResponseDto;
 import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.service.MemberService;
 
@@ -40,8 +41,8 @@ public class MemberController {
 
     //api 로그인
     @PostMapping(value = "/user/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequestDto requestDto,
-                                HttpServletResponse response) {
+    public ResponseEntity<ResponseDto<MemberResponseDto>> login(@RequestBody LoginRequestDto requestDto,
+                                                                HttpServletResponse response) {
         return memberService.login(requestDto, response);
     }
 }

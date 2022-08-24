@@ -24,7 +24,11 @@ public enum ErrorCode {
     PASSWORD_LEGNTH(HttpStatus.BAD_REQUEST, "비밀번호는 4자 이상 12자 이하여야 합니다"),
 
 
+    /*
+    401 UNAUTHORIZED : 인증되지 않은 사용자
+    */
 
+    INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료되었거나 유효하지 않은 토큰입니다"),
 
     /*
     404 Not Found

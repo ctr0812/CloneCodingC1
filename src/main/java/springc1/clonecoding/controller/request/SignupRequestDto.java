@@ -1,5 +1,6 @@
 package springc1.clonecoding.controller.request;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SignupRequestDto {
+
 
     private String username;
     private String nickname;

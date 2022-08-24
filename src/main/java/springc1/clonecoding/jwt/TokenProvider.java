@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import springc1.clonecoding.controller.request.TokenDto;
 import springc1.clonecoding.domain.Member;
+import springc1.clonecoding.exception.LoginException;
 
 import java.security.Key;
 import java.util.Date;

@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springc1.clonecoding.controller.request.*;
+import springc1.clonecoding.controller.response.MemberResponseDto;
+import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.Member;
 import springc1.clonecoding.exception.CustomException;
 import springc1.clonecoding.exception.ErrorCode;
@@ -108,7 +110,7 @@ public class MemberService {
 
 
     @Transactional
-    public ResponseEntity<String> login(LoginRequestDto requestDto, HttpServletResponse response) {
+    public ResponseEntity<ResponseDto<MemberResponseDto>> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
         Member member = memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         passwordCheck(member.getPassword(), requestDto.getPassword());
@@ -116,7 +118,7 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
 
-        return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.success(new MemberResponseDto(member.getNickname())), HttpStatus.OK);
 
     }
 

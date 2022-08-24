@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class MemberResponseDto {
     private String nickname;
 
+    public MemberResponseDto(String nickname) {
+        this.nickname = nickname;
+    }
 }
