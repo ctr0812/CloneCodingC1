@@ -152,7 +152,7 @@ public class ProductService {
     // 상품 작성자만이 수정 ,삭제 가능
     @Transactional(readOnly = true)
     public void productMemberValidate(Member member, Product product) {
-        if (product.validateMember(member)) {
+        if (!product.validateMember(member)) {
             throw new IllegalArgumentException("상품 게시글 작성자가 아닙니다");
         }
     }
