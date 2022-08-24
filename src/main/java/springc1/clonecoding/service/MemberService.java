@@ -7,8 +7,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springc1.clonecoding.controller.request.*;
-import springc1.clonecoding.controller.response.ResponseDto;
 import springc1.clonecoding.domain.Member;
+import springc1.clonecoding.exception.CustomException;
+import springc1.clonecoding.exception.ErrorCode;
 import springc1.clonecoding.jwt.TokenProvider;
 import springc1.clonecoding.repository.MemberRepository;
 import javax.servlet.http.HttpServletResponse;
@@ -29,32 +30,34 @@ public class MemberService {
 
         String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
         String nicknamePattern = "^[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣~!@#$%^&*]{2,8}";  // 영어 , 한글 , 특수문자 , 2자이상 8자이하
-        String passwordPattern =  "(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{4,12}";  // 영어, 숫자, 특수문자 4자이상 12자 이하
+        String passwordPattern = "(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{4,12}";  // 영어, 숫자, 특수문자 4자이상 12자 이하
 
         String username = requestDto.getUsername();
         String nickname = requestDto.getNickname();
         String password = requestDto.getPassword();
 
-        if(username.equals(""))
-            throw new IllegalArgumentException("아이디를 입력해주세요.");
-        else if(!Pattern.matches(userNamePattern,username))
-            throw new IllegalArgumentException("아이디 형식이 맞지 않습니다.");
+        if (username.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_USERNAME);
         else if (memberRepository.findByUsername(username).isPresent())
-            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        else if (!Pattern.matches(userNamePattern, username))
+            throw new CustomException(ErrorCode.USERNAME_WRONG);
 
-        if(nickname.equals(""))
-            throw new IllegalArgumentException("닉네임을 입력해주세요.");
-        else if(!Pattern.matches(nicknamePattern,nickname))
-            throw new IllegalArgumentException("닉네임 형식이 맞지 않습니다.");
+        if (nickname.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_NICKNAME);
         else if (memberRepository.findByNickname(nickname).isPresent())
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        else if (2 > nickname.length() || 8 < nickname.length())
+            throw new CustomException(ErrorCode.NICKNAME_LEGNTH);
+        else if (!Pattern.matches(nicknamePattern, nickname))
+            throw new CustomException(ErrorCode.NICKNAME_WRONG);
 
-        if(password.equals(""))
-            throw new IllegalArgumentException("비밀번호를 입력해주세요.");
-        else if ( 4 > password.length() || 12 < password.length() )
-            throw new IllegalArgumentException("비밀번호 길이를 확인해주세요.");
+        if (password.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        else if (4 > password.length() || 12 < password.length())
+            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
         else if (!Pattern.matches(passwordPattern, password))
-            throw new IllegalArgumentException("비밀번호 형식이 맞지 않습니다.");
+            throw new CustomException(ErrorCode.PASSWORD_WRONG);
 
 
         password = passwordEncoder.encode(password);
@@ -73,12 +76,12 @@ public class MemberService {
         String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
         String username = requestDto.getUsername();
 
-        if(username.equals(""))
-            throw new IllegalArgumentException("아이디를 입력해주세요.");
-        else if(!Pattern.matches(userNamePattern, username))
-            throw new IllegalArgumentException("아이디 형식이 맞지 않습니다.");
+        if (username.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_USERNAME);
         else if (memberRepository.findByUsername(username).isPresent())
-            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        else if (!Pattern.matches(userNamePattern, username))
+            throw new CustomException(ErrorCode.USERNAME_WRONG);
 
         return new ResponseEntity<>("사용 가능한 아이디입니다", HttpStatus.OK);
     }
@@ -90,12 +93,14 @@ public class MemberService {
         String nicknamePattern = "^[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣~!@#$%^&*]{2,8}";  // 영어 , 한글 , 특수문자 , 2자이상 8자이하
         String nickname = requestDto.getNickname();
 
-        if(nickname.equals(""))
-            throw new IllegalArgumentException("닉네임을 입력해주세요.");
-        else if(!Pattern.matches(nicknamePattern, nickname))
-            throw new IllegalArgumentException("닉네임 형식이 맞지 않습니다.");
+        if (nickname.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_NICKNAME);
         else if (memberRepository.findByNickname(nickname).isPresent())
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        else if (2 > nickname.length() || 8 < nickname.length())
+            throw new CustomException(ErrorCode.NICKNAME_LEGNTH);
+        else if (!Pattern.matches(nicknamePattern, nickname))
+            throw new CustomException(ErrorCode.NICKNAME_WRONG);
 
 
         return new ResponseEntity<>("사용 가능한 닉네임입니다", HttpStatus.OK);
@@ -105,12 +110,10 @@ public class MemberService {
     @Transactional
     public ResponseEntity<String> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
-        Member member = memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
+        Member member = memberRepository.findByUsername(requestDto.getUsername()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         passwordCheck(member.getPassword(), requestDto.getPassword());
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-
         tokenToHeaders(tokenDto, response);
 
         return new ResponseEntity<>("로그인 성공", HttpStatus.OK);
@@ -118,9 +121,8 @@ public class MemberService {
     }
 
 
-
     private void passwordCheck(String password, String comfirmPassword) {
-        if (passwordEncoder.matches(password, comfirmPassword)){
+        if (passwordEncoder.matches(password, comfirmPassword)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
     }
@@ -128,6 +130,5 @@ public class MemberService {
     public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
         response.addHeader("Access_Token", "Bearer " + tokenDto.getAccessToken());
     }
-
 
 }
