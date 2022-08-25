@@ -86,7 +86,7 @@ public class MemberService {
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
 
-        return new ResponseEntity<>(ResponseDto.success(new MemberResponseDto(member.getNickname())), HttpStatus.OK);
+        return new ResponseEntity<>(ResponseDto.success(new MemberResponseDto(member.getNickname(), member.getLocation())), HttpStatus.OK);
 
     }
 
