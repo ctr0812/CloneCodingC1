@@ -29,40 +29,9 @@ public class MemberService {
     @Transactional
     public ResponseDto<String> signup(SignupRequestDto requestDto) {
 
+        validCheck(requestDto);
 
-        String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
-        String nicknamePattern = "^[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣~!@#$%^&*]{2,8}";  // 영어 , 한글 , 특수문자 , 2자이상 8자이하
-        String passwordPattern = "(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{4,12}";  // 영어, 숫자, 특수문자 4자이상 12자 이하
-
-        String username = requestDto.getUsername();
-        String nickname = requestDto.getNickname();
-        String password = requestDto.getPassword();
-
-        if (username.equals(""))
-            throw new CustomException(ErrorCode.EMPTY_USERNAME);
-        else if (memberRepository.findByUsername(username).isPresent())
-            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
-        else if (!Pattern.matches(userNamePattern, username))
-            throw new CustomException(ErrorCode.USERNAME_WRONG);
-
-        if (nickname.equals(""))
-            throw new CustomException(ErrorCode.EMPTY_NICKNAME);
-        else if (memberRepository.findByNickname(nickname).isPresent())
-            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
-        else if (2 > nickname.length() || 8 < nickname.length())
-            throw new CustomException(ErrorCode.NICKNAME_LEGNTH);
-        else if (!Pattern.matches(nicknamePattern, nickname))
-            throw new CustomException(ErrorCode.NICKNAME_WRONG);
-
-        if (password.equals(""))
-            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
-        else if (4 > password.length() || 12 < password.length())
-            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
-        else if (!Pattern.matches(passwordPattern, password))
-            throw new CustomException(ErrorCode.PASSWORD_WRONG);
-
-
-        password = passwordEncoder.encode(password);
+        String password = passwordEncoder.encode(requestDto.getPassword());
 
         Member member = new Member(requestDto, password);
 
@@ -70,6 +39,8 @@ public class MemberService {
         return ResponseDto.success("회원가입 축하합니다!");
 
     }
+
+
 
 
     @Transactional
@@ -132,4 +103,37 @@ public class MemberService {
         response.addHeader("Access_Token", "Bearer " + tokenDto.getAccessToken());
     }
 
+
+    private void validCheck(SignupRequestDto requestDto) {
+        String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
+        String nicknamePattern = "^[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣~!@#$%^&*]{2,8}";  // 영어 , 한글 , 특수문자 , 2자이상 8자이하
+        String passwordPattern = "(?=.*[A-Za-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{4,12}";  // 영어, 숫자, 특수문자 4자이상 12자 이하
+
+        String username = requestDto.getUsername();
+        String nickname = requestDto.getNickname();
+        String password = requestDto.getPassword();
+
+        if (username.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_USERNAME);
+        else if (memberRepository.findByUsername(username).isPresent())
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
+        else if (!Pattern.matches(userNamePattern, username))
+            throw new CustomException(ErrorCode.USERNAME_WRONG);
+
+        if (nickname.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_NICKNAME);
+        else if (memberRepository.findByNickname(nickname).isPresent())
+            throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
+        else if (2 > nickname.length() || 8 < nickname.length())
+            throw new CustomException(ErrorCode.NICKNAME_LEGNTH);
+        else if (!Pattern.matches(nicknamePattern, nickname))
+            throw new CustomException(ErrorCode.NICKNAME_WRONG);
+
+        if (password.equals(""))
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        else if (4 > password.length() || 12 < password.length())
+            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
+        else if (!Pattern.matches(passwordPattern, password))
+            throw new CustomException(ErrorCode.PASSWORD_WRONG);
+    }
 }
