@@ -119,6 +119,7 @@ public class PostService {
     }
 
     // 이미지 저장
+    @Transactional
     public void imgSave(PostRequestDto requestDto, Post post) {
         requestDto.getImgPostList().forEach(imgPost -> {
             imgPost.setPost(post);

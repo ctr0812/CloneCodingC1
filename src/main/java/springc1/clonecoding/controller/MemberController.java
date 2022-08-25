@@ -28,13 +28,13 @@ public class MemberController {
     }
 
     //api 아이디 중복체크
-    @PostMapping(value = "/user/signup/usercheck")
+    @GetMapping(value = "/user/signup/usercheck")
     public ResponseDto<String> usercheck(@RequestBody UserCheckRequestDto requestDto){
         return memberService.userCheck(requestDto);
     }
 
     //api 닉네임 중복체크
-    @PostMapping(value = "/user/signup/nickcheck")
+    @GetMapping(value = "/user/signup/nickcheck")
     public ResponseDto<String>  nickcheck(@RequestBody NickCheckRequestDto requestDto){
         return memberService.nickCheck(requestDto);
     }
