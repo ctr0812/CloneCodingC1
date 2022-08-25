@@ -108,8 +108,8 @@ public class SecurityConfiguration {
                   // 회원가입 관련 filter 통과
                 .antMatchers("/user/login").permitAll()
                 .antMatchers("/user/signup").permitAll()
-                .antMatchers("/user/signup/usercheck").permitAll()
-                .antMatchers("/user/signup/nickcheck").permitAll()
+                .antMatchers("/user/signup/usercheck/**").permitAll()
+                .antMatchers("/user/signup/nickcheck/**").permitAll()
                   // 전체게시글 조회, 게시글 상세 조회 filter 통과
                 .antMatchers(HttpMethod.GET,"/api/post").permitAll()
                 .antMatchers(HttpMethod.GET,"/api/post/id/**").permitAll()
