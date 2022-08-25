@@ -121,7 +121,7 @@ public class SecurityConfiguration {
                 .anyRequest().authenticated()
 
                 .and()
-                  // 커스텀한 jwt filter 사용
+                  // 커스텀한 jwt filter사용
                 .addFilterBefore(new JwtFilter(SECRET_KEY, tokenProvider, userDetailsServiceImpl), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
