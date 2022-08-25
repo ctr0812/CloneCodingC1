@@ -28,15 +28,15 @@ public class MemberController {
     }
 
     //api 아이디 중복체크
-    @GetMapping(value = "/user/signup/usercheck/{username}")
-    public ResponseDto<String> usercheck(@PathVariable String username){
-        return memberService.userCheck(username);
+    @PostMapping(value = "/user/signup/usercheck")
+    public ResponseDto<String> usercheck(@RequestBody UserCheckRequestDto dto){
+        return memberService.userCheck(dto);
     }
 
     //api 닉네임 중복체크
-    @GetMapping(value = "/user/signup/nickcheck/{nickname}")
-    public ResponseDto<String>  nickcheck(@PathVariable String nickname){
-        return memberService.nickCheck(nickname);
+    @PostMapping(value = "/user/signup/nickcheck")
+    public ResponseDto<String>  nickcheck(@RequestBody NickCheckRequestDto dto){
+        return memberService.nickCheck(dto);
     }
 
     //api 로그인

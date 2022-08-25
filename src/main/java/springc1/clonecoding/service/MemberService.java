@@ -44,9 +44,11 @@ public class MemberService {
 
 
     @Transactional
-    public ResponseDto<String> userCheck(String username) {
+    public ResponseDto<String> userCheck(UserCheckRequestDto dto) {
 
         String userNamePattern = "^[A-Za-z[0-9]]{4,12}$";  // 영어, 숫자 4자이상 12자 이하
+
+        String username = dto.getUsername();
 
         if (username.equals(""))
             return ResponseDto.fail("Bad_Request","아이디를 입력해주세요.");
@@ -60,9 +62,11 @@ public class MemberService {
 
 
     @Transactional
-    public ResponseDto<String> nickCheck(String nickname) {
+    public ResponseDto<String> nickCheck(NickCheckRequestDto dto) {
 
         String nicknamePattern = "^[a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣~!@#$%^&*]{2,8}";  // 영어 , 한글 , 특수문자 , 2자이상 8자이하
+
+        String nickname = dto.getNickname();
 
         if (nickname.equals(""))
             return ResponseDto.fail("Bad_Request","닉네임을 입력해주세요.");

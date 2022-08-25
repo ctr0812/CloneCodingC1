@@ -58,7 +58,7 @@ public class ChatRoomService {
     }
 
 
-
+    @Transactional
     public ResponseDto<ChatRoomResponseDto> createChatRoom(ChatRoomDto dto) {
 
         String senderNick = dto.getNickname();
@@ -78,10 +78,12 @@ public class ChatRoomService {
             ChatRoom chatRoom = new ChatRoom(findProduct);
             chatRoomRepository.save(chatRoom);
 
+
             ChatRoomMember chatRoomMember1 = new ChatRoomMember(sender , chatRoom);
             ChatRoomMember chatRoomMember2 = new ChatRoomMember(receiver, chatRoom);
             chatRoomMemberRepository.save(chatRoomMember1);
             chatRoomMemberRepository.save(chatRoomMember2);
+
 
             ChatRoomResponseDto chatRoomResponseDto = new ChatRoomResponseDto(chatRoom.getRoomId(),chatRoom.getProduct().getName());
 
