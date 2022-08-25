@@ -1,6 +1,5 @@
 package springc1.clonecoding.controller.request;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
